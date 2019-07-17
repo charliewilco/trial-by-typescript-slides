@@ -1,0 +1,403 @@
+import { FullScreenCode, Split } from "mdx-deck/layouts";
+import { Head, Notes } from "mdx-deck";
+import highlight from "@mdx-deck/themes/syntax-highlighter-prism";
+import theme from "@mdx-deck/themes/dark";
+import { Emosvg } from "./emosvg";
+
+export const themes = [
+  Object.assign({}, theme, {
+    font: "Inter, system-ui, sans-serif",
+    monospace: '"Operator Mono", monospace !important'
+  }),
+  highlight
+];
+
+<Head>
+  <title>Trial by TypeScript</title>
+</Head>
+
+# Trial by TypeScript
+
+# ⚛️
+
+### `@charlespeters`
+
+---
+
+## So TypeScript.
+
+<Notes>Talk about the trend.</Notes>
+
+---
+
+## Who's using TypeScript?
+
+<Split>
+  <ul>
+    <li>Storybook</li>
+    <li>Yarn version 2</li>
+    <li>MobX State Tree</li>
+    <li>Apollo</li>
+    <li>Next.js</li>
+    <li>Prisma</li>
+    <li>Jest</li>
+  </ul>
+  <ul>
+    <li>Framer Motion</li>
+    <li>Ember.js</li>
+    <li>Cycle.js</li>
+    <li>Rx.js</li>
+    <li>Visual Studio Code</li>
+  </ul>
+</Split>
+
+---
+
+## TypeScript is a superset of JavaScript to bring strong typing to our beloved "untyped" language
+
+---
+
+> The advantage of a strongly typed language is that you are forced to make the behaviour of your program explicit...This makes code easier to understand because there is no (or less) hidden behaviour. However, it also makes your code more verbose.
+
+---
+
+TypeScript as a language is JavaScript with bolted on type annonations to bring strong typing to JS.
+
+---
+
+### From a learning experience, TypeScript becomes much easier when you consider it "taking notes" about the code you were already writing
+
+---
+
+# [Demo](https://codepen.io/charliewilco/pen/qzGQKz?editors=0011)
+
+---
+
+```js
+function getCurrency(amount) {
+  return amount.toLocaleString("en", {
+    style: "currency",
+    currency: "USD"
+  });
+}
+
+getCurrency(5000); // $5000.00
+```
+
+---
+
+```js
+getCurrency("5000");
+
+// "5000"
+
+getCurrency();
+
+// "TypeError:
+// Cannot read property 'toLocaleString' of undefined
+
+getCurrency([5000, 4000]);
+//
+```
+
+---
+
+## But with TypeScript...
+
+```ts
+function getCurrency(amount: number): string {
+  return amount.toLocaleString("en", {
+    style: "currency",
+    currency: "USD"
+  });
+}
+```
+
+<Notes>
+  Describe, the change, the added annotations.
+
+Now with these small annonations, I can't call this function with any other parameter than a number and the outputted value is a `string`. Your environment can start to autocomplete these things for you and smartly help you understand the code in your whole project.
+
+</Notes>
+
+---
+
+## Basic Types
+
+- `number`
+- `string`
+- `boolean`
+- `string[]` or `Array<string>`
+- `Promise<>`
+- `void`
+- `any`
+- Union type `string | null`
+
+<Notes>
+  `any` is a type that's usually reserved for super special cases. it's the
+  `!important` of TS. There's an arrangement on my team now that if you're going
+  to define something as with that type you need to comment as to why.
+</Notes>
+
+---
+
+## Interfaces
+
+A definition for the shape for anything object related, like classes
+
+```ts
+interface LabeledValue {
+  label: string;
+}
+
+function printLabel(labeledObj: LabeledValue): void {
+  console.log(labeledObj.label);
+}
+
+printLabel({ size: 10, label: "Size 10 Object" });
+```
+
+<Notes>
+  Sometimes this is called "duck typing", meaning if it walks and quacks like a
+  duck it must be.
+</Notes>
+
+---
+
+## Generics
+
+```ts
+function createArray<T>(item: T, count: number): T[] {
+  return Array(count).fill(item);
+}
+
+createArray<string>("thing", 5);
+createArray<LabeledValue>(
+  {
+    size: 10,
+    label: "Size 10 Object"
+  },
+  5
+);
+```
+
+<Notes>You can pass generics, to a class, a function, an interface</Notes>
+
+---
+
+```ts
+class LocalCache<T> {
+  public items: T[] = [];
+
+  add(item: T): void {
+    this.items.push(item);
+  }
+
+  remove(item: T): void {
+    const key = this.items.find(item);
+    if (key) {
+      this.items.splice(key, 0);
+    }
+  }
+}
+```
+
+---
+
+```ts
+const cache = new Cache<string>();
+cache.add("Hello");
+cache.remove("Hello");
+```
+
+---
+
+## Enums
+
+```ts
+enum ThemeType {
+  BLUE = "BLUE",
+  GREEN = "GREEN",
+  RED = "RED"
+}
+```
+
+<Notes>
+  Added type safety around a variable. If this was called with the string "BLUE", it would fail
+</Notes>
+---
+
+```ts
+function getTheme(action: ThemeType) {
+  switch (action) {
+    case ThemeType.BLUE:
+      return {...}
+    case ThemeType.RED:
+      return {...}
+    default:
+      throw new Error("Never gonna die!!!")
+  }
+}
+```
+
+---
+
+```ts
+getState("BLUE"); // ❌
+getState(ThemeType.BLUE); // ✅
+```
+
+---
+
+## Enough syntax, Charles.
+
+---
+
+What can TypeScript do for React?
+
+<Notes>
+  There could be books written on this subject. But to me, it took React, which
+  was getting mundane and routine, to being something I was geniunely excited to
+  work on again.
+</Notes>
+
+---
+
+## Quick Setup things
+
+- If you use JSX you need to use the `.tsx` extension.
+- Install the community types: `yarn add @types/react @types/react-dom`
+- Prefer `import * as React from "react"` to use all the relevant types
+
+---
+
+# Context
+
+---
+
+```tsx
+interface ITheme {
+  background: string;
+  color: string;
+}
+
+interface IContext {
+  theme: ITheme;
+  onToggleTheme(theme: ITheme): void;
+}
+
+const ThemeContext: React.Context<IContext> = React.createContext<IContext>({});
+```
+
+---
+
+```tsx
+class ThemeProvider extends React.Component {
+  public render(): JSX.Element {
+    return (
+      <ThemeContext.Provider
+        value={
+          {
+            /*
+        Now this can ONLY BE equal to IContext
+      */
+          }
+        }
+      >
+        {this.props.children}
+      </ThemeContext.Provider>
+    );
+  }
+}
+```
+
+---
+
+```tsx
+class ThemedButton extends React.Component {
+  public static contextType: React.Context<IContext> = ThemeContext;
+  private context: React.ContextType<typeof ThemeContext>;
+  public render(): JSX.Element {
+    return (
+      <button
+        style={{
+          background: this.context.theme.background
+        }}
+      >
+        Button
+      </button>
+    );
+  }
+}
+```
+
+---
+
+# Hooks
+
+---
+
+# I 💖💖💖 Hooks
+
+<Notes>Hooks give the ability to share stateful logic out of a class.</Notes>
+
+---
+
+## `useState()`
+
+```ts
+const [name, setName] = React.useState<string>("Charles");
+const [count, setCount] = React.useState<number>(0);
+const [theme, setTheme] = React.useState<ITheme>({
+  background: "tomato",
+  color: "white"
+});
+```
+
+---
+
+## `useRef()`
+
+```tsx
+function App() {
+  const ref = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, []);
+
+  return <div ref={ref} />;
+}
+```
+
+---
+
+## `useReducer()`
+
+<Notes>
+  <a href="https://codesandbox.io/s/ppy26kyxzq" target="_blank">
+    Demo
+  </a>
+</Notes>
+
+---
+
+# Wait, what...
+
+<Notes>
+  To bring this back to my point, TypeScript makes your code really intentional
+  and explicit and adding small annonations, doesn't just help you write fewer
+  bugs, it helps you understand the code you're writing today, last month and
+  even tomorrow.
+</Notes>
+
+---
+
+<Emosvg size={250} />
+
+## Charles is a Front-end Engineer
+
+**[`@charlespeters`](https://twitter.com/charlespeters)**  
+**[`charlespeters.net`](https://charlespeters.net/)**

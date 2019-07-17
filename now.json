@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "alias": "seattle-react-ts-2019.now.sh",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ]
+}
