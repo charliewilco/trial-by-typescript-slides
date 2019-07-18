@@ -144,6 +144,7 @@ A definition for the shape for anything object related, like classes
 ```ts
 interface LabeledValue {
   label: string;
+  size: number;
 }
 
 function printLabel(labeledObj: LabeledValue): void {
@@ -219,13 +220,15 @@ enum ThemeType {
 ```
 
 <Notes>
-  Added type safety around a variable. If this was called with the string "BLUE", it would fail
+  Added type safety around a variable. If this was called with the string
+  "BLUE", it would fail
 </Notes>
+
 ---
 
 ```ts
-function getTheme(action: ThemeType) {
-  switch (action) {
+function getTheme(theme: ThemeType) {
+  switch (theme) {
     case ThemeType.BLUE:
       return {...}
     case ThemeType.RED:
@@ -239,8 +242,8 @@ function getTheme(action: ThemeType) {
 ---
 
 ```ts
-getState("BLUE"); // ❌
-getState(ThemeType.BLUE); // ✅
+getTheme("BLUE"); // ❌
+getTheme(ThemeType.BLUE); // ✅
 ```
 
 ---
