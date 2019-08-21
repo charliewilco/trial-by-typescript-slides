@@ -12,6 +12,12 @@ export const themes = [
   highlight
 ];
 
+
+<Head>
+  <title>Seattle React 2019</title>
+</Head>
+
+
 # Trial by TypeScript
 
 # ⚛️
@@ -191,7 +197,7 @@ class LocalCache<T> {
   }
 
   remove(item: T): void {
-    const key = this.items.find(item);
+    const key: number = this.items.find(item);
     if (key) {
       this.items.splice(key, 0);
     }
